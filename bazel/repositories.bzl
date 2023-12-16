@@ -4,7 +4,7 @@ load("@envoy_api//bazel:external_deps.bzl", "load_repository_locations")
 load(":repository_locations.bzl", "PROTOC_VERSIONS", "REPOSITORY_LOCATIONS_SPEC")
 load("@com_google_googleapis//:repository_rules.bzl", "switched_rules_by_language")
 
-PPC_SKIP_TARGETS = ["envoy.filters.http.lua"]
+PPC_SKIP_TARGETS = []
 
 WINDOWS_SKIP_TARGETS = [
     "envoy.filters.http.file_system_buffer",
@@ -222,6 +222,7 @@ def envoy_dependencies(skip_targets = []):
     _com_github_jbeder_yaml_cpp()
     _com_github_libevent_libevent()
     _com_github_luajit_luajit()
+    _com_github_luajit2_luajit2()
     _com_github_moonjit_moonjit()
     _com_github_nghttp2_nghttp2()
     _com_github_skyapm_cpp2sky()
@@ -1110,6 +1111,20 @@ def _com_github_luajit_luajit():
     native.bind(
         name = "luajit",
         actual = "@envoy//bazel/foreign_cc:luajit",
+    )
+
+def _com_github_luajit2_luajit2():
+    external_http_archive(
+        name = "com_github_luajit2_luajit2",
+        build_file_content = BUILD_ALL_CONTENT,
+        patches = ["@envoy//bazel/foreign_cc:luajit2.patch"],
+        patch_args = ["-p1"],
+        patch_cmds = ["chmod u+x build.py"],
+    )
+
+    native.bind(
+        name = "luajit2",
+        actual = "@envoy//bazel/foreign_cc:luajit2",
     )
 
 def _com_github_moonjit_moonjit():
